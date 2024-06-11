@@ -56,7 +56,7 @@ public class UserController {
         }
 
         // 에러가 없으면 회원 등록 진행
-        String page = "/user/registerOk";
+        String page = "user/registerOk";
         int cnt = userService.register(user);    // 매개변수 받은 신규 회원 정보를 갖고 데이터 베이스에 insert 수행
         model.addAttribute("result", cnt);
 
