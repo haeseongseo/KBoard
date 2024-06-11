@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lec.spring.repository.AttachmentRepository">
+
+    <insert id="insert" flushCache="true"
+        parameterType="arraylist">        <!-- parameterType="arraylist" : 매개변수에서 배열이거나 list 인 것을 찾아냄-->
+
+        insert into t5_attachment(sourcename,filename,post_id)
+        VALUES
+            <!-- separator="," : 순환 하면서 value 가 끝날때마다 , 를 찍어줌-->
+            <foreach collection="list" item="e" separator=",">    <!-- list : AttachmentRepository 의 매개변수 list -> Map 타입 -->
+                (#{e.sourcename}, #{e.filename}, #{param2})     <!--param2 : Long postId-->
+            </foreach>
+    </insert>
+
+    <insert id="save" flushCache="true" parameterType="com.lec.spring.domain.Attachment">
+        INSERT INTO t5_attachment(sourcename, filename, post_id)
+        VALUES (#{sourcename}, #{filename}, #{post_id})
+    </insert>
+
+    <sql id="SELECTFILE">
+        SELECT id, sourcename, filename, post_id
+        from t5_attachment
+        where 1 = 1
+    </sql>
+
+    <select id="findByPost" resultType="com.lec.spring.domain.Attachment">
+        <include refid="SELECTFILE"/>
+        AND
+            post_id = #{param1}
+        ORDER BY id ASC
+    </select>
+
+    <select id="findById" resultType="com.lec.spring.domain.Attachment">
+        <include refid="SELECTFILE"/>
+        AND id = #{id}
+    </select>
+
+    <select id="findByIds" resultType="com.lec.spring.domain.Attachment" parameterType="Arraylist">
+        <include refid="SELECTFILE"/>
+        AND id in     <!-- Long [] 안에 담겨있는 ids 값들이 in 뒤에 담겨야함-->
+            <!-- open 처음 시작하는 부분, close : 마지막 부분 -->
+            <foreach collection="array" item="e" separator="," open="(" close=")">        <!-- 여기서의 e 는 Long 타입-->
+                #{e}
+            </foreach>
+        ORDER BY id ASC
+    </select>
+
+    <delete id="deleteByIds" flushCache="true" parameterType="java.util.ArrayList">        <!-- parameterType 에 Arraylist 라고 써도 됨-->
+        delete from t5_attachment
+        where id in (<foreach collection="array" item="item" separator=",">
+                        #{item}
+                    </foreach>)  <!-- () : 위의 open, close 에서 사용한 것을 이렇게 사용해도 됨-->
+    </delete>
+
+    <delete id="delete" flushCache="true">
+        DELETE FROM t5_attachment where id = #{id}
+    </delete>
+
+</mapper>

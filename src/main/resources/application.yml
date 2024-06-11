@@ -1,0 +1,4 @@
+spring:
+  profiles:
+    active: dev
+#    이렇게 직접적으로 설정하든가 혹은 Edit Configuration 에 들어가서 설정해도 똑같음.

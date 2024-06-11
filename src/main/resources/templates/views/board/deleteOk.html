@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<!-- 팝업 띄우기 위한 용도(성공과 실패 했을 떄) -->
+
+<!--result 값이 0 보다 크지 않으면 등록 실패-->
+  <script th:unless="${result > 0}">
+<!--  등록 실패할 경우 페이지 뒤로 가기  -->
+    alert("삭제 실패");
+    history.back();
+  </script>
+
+<!--result 값이 0 보다 크면 -->
+<!--  등록 성공할 경우 /board/detail 로 이동-->
+  <script th:if="${result > 0}" th:inline="javascript">
+    alert("삭제 성공")
+    //
+    location.href = "list";
+  </script>
+
+</html>
